@@ -58,7 +58,4 @@ Do not reuse these credentials anywhere else.
 
 The gateway plugin treats <https://docs.onekhusa.com> as the source of truth for endpoints, payloads, auth, and webhook verification. The primary checkout flow is the hosted RTP initiate endpoint (`/api/checkout/rtp/initiate`); any local notes under `docs/onekhusa-*.md` are supplementary and must reconcile with the official docs.
 
-## Notes
 
-- WordPress core files are present in the repo for convenience; they are not the focus of development.
-- `.cursor/` is gitignored.
