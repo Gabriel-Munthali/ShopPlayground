@@ -1,0 +1,90 @@
+2026-04-22T07:50:28+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: {"type":"https://httpstatuses.com/404","title":"Not Found","status":404,"instance":""}
+2026-04-22T07:50:28+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-22T07:50:32+00:00 ERROR Collections RTP initiate rejected (HTTP 400). Body: {"type":"https://httpstatuses.com/400","title":"Validation Error","status":400,"detail":"The user does not exist","instance":"/sandbox/v1/collections/requestToPay/initiate","errorCode":"E900"}
+2026-04-22T09:48:50+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: {"type":"https://httpstatuses.com/404","title":"Not Found","status":404,"instance":""}
+2026-04-22T09:48:50+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-22T09:48:54+00:00 ERROR Collections RTP initiate rejected (HTTP 400). Body: {"type":"https://httpstatuses.com/400","title":"Validation Error","status":400,"detail":"The user does not exist","instance":"/sandbox/v1/collections/requestToPay/initiate","errorCode":"E900"}
+2026-04-22T10:04:44+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: {"type":"https://httpstatuses.com/404","title":"Not Found","status":404,"instance":""}
+2026-04-22T10:04:44+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-22T10:04:47+00:00 INFO Collections RTP returned TAN only (no paymentTransactionId). Customer sent to thank-you page. Hosted checkout needs a working RTP checkout initiate URL that returns paymentTransactionId.
+2026-04-22T10:05:53+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: {"type":"https://httpstatuses.com/404","title":"Not Found","status":404,"instance":""}
+2026-04-22T10:05:53+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-22T10:05:55+00:00 INFO Collections RTP returned TAN only (no paymentTransactionId). Customer sent to thank-you page. Hosted checkout needs a working RTP checkout initiate URL that returns paymentTransactionId.
+2026-04-22T10:16:21+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Page Not Found</title>
+        <link href="https://onekhusa.com/modules/system/assets/css/styles.css" rel="stylesheet" />
+        <script src="https://onekhusa.com/modules/system/assets/js/framework-bundle.min.js"></script>
+        <meta name="turbo-visit-control" content="disable" />
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <div class="container">
+            <h1><i class="icon-chain-broken warning"></i> Page Not 
+2026-04-22T10:16:21+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-22T10:16:24+00:00 INFO Collections RTP returned TAN only (no paymentTransactionId). Customer sent to thank-you page. Hosted checkout needs a working RTP checkout initiate URL that returns paymentTransactionId.
+2026-04-22T12:25:27+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Page Not Found</title>
+        <link href="https://onekhusa.com/modules/system/assets/css/styles.css" rel="stylesheet" />
+        <script src="https://onekhusa.com/modules/system/assets/js/framework-bundle.min.js"></script>
+        <meta name="turbo-visit-control" content="disable" />
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <div class="container">
+            <h1><i class="icon-chain-broken warning"></i> Page Not 
+2026-04-22T12:25:27+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-22T12:25:30+00:00 INFO Collections RTP returned TAN only (no paymentTransactionId). Customer sent to thank-you page. Hosted checkout needs a working RTP checkout initiate URL that returns paymentTransactionId.
+2026-04-22T12:26:31+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Page Not Found</title>
+        <link href="https://onekhusa.com/modules/system/assets/css/styles.css" rel="stylesheet" />
+        <script src="https://onekhusa.com/modules/system/assets/js/framework-bundle.min.js"></script>
+        <meta name="turbo-visit-control" content="disable" />
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <div class="container">
+            <h1><i class="icon-chain-broken warning"></i> Page Not 
+2026-04-22T12:26:31+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-22T12:26:32+00:00 INFO Collections RTP returned TAN only (no paymentTransactionId). Customer sent to thank-you page. Hosted checkout needs a working RTP checkout initiate URL that returns paymentTransactionId.
+2026-04-22T12:34:31+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Page Not Found</title>
+        <link href="https://onekhusa.com/modules/system/assets/css/styles.css" rel="stylesheet" />
+        <script src="https://onekhusa.com/modules/system/assets/js/framework-bundle.min.js"></script>
+        <meta name="turbo-visit-control" content="disable" />
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <div class="container">
+            <h1><i class="icon-chain-broken warning"></i> Page Not 
+2026-04-22T12:38:23+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Page Not Found</title>
+        <link href="https://onekhusa.com/modules/system/assets/css/styles.css" rel="stylesheet" />
+        <script src="https://onekhusa.com/modules/system/assets/js/framework-bundle.min.js"></script>
+        <meta name="turbo-visit-control" content="disable" />
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <div class="container">
+            <h1><i class="icon-chain-broken warning"></i> Page Not 
+2026-04-22T12:47:30+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Page Not Found</title>
+        <link href="https://onekhusa.com/modules/system/assets/css/styles.css" rel="stylesheet" />
+        <script src="https://onekhusa.com/modules/system/assets/js/framework-bundle.min.js"></script>
+        <meta name="turbo-visit-control" content="disable" />
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <div class="container">
+            <h1><i class="icon-chain-broken warning"></i> Page Not 

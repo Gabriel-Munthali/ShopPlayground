@@ -1,0 +1,17 @@
+{
+	"name": "woocommerce-onekhusa-rtp",
+	"version": "0.1.1",
+	"description": "Scaffold-style developer tooling for WooCommerce OneKhusa RTP.",
+	"private": true,
+	"scripts": {
+		"build": "wp-scripts build",
+		"start": "wp-scripts start",
+		"lint": "wp-scripts lint-js src",
+		"format": "wp-scripts format src --extensions=js,md,json",
+		"test": "echo \"No JS tests configured yet\""
+	},
+	"devDependencies": {
+		"@woocommerce/dependency-extraction-webpack-plugin": "^3.1.0",
+		"@wordpress/scripts": "^32.1.0"
+	}
+}

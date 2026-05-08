@@ -1,0 +1,25 @@
+@media (max-width: 992px) {
+    .auth-section .col-md-6:last-child {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    .auth-form-wrapper {
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .auth-form-wrapper {
+        width: 100%;
+    }
+}
+
+/* Button groups responsive */
+@media (max-width: 575.98px) {
+    .btn-group {
+        flex-wrap: wrap;
+    }
+}

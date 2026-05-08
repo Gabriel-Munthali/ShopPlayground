@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<ruleset name="WooCommerce OneKhusa RTP">
+	<description>PHPCS rules for WooCommerce OneKhusa RTP</description>
+
+	<file>woocommerce-onekhusa-rtp.php</file>
+	<file>uninstall.php</file>
+	<file>includes</file>
+
+	<exclude-pattern>vendor/*</exclude-pattern>
+	<exclude-pattern>node_modules/*</exclude-pattern>
+	<exclude-pattern>tests/*</exclude-pattern>
+	<exclude-pattern>build/*</exclude-pattern>
+	<exclude-pattern>src/*</exclude-pattern>
+
+	<config name="minimum_supported_wp_version" value="6.5"/>
+
+	<rule ref="WordPress"/>
+
+	<!--
+		Use WooCommerce Coding Standards when present (provided by woocommerce/woocommerce-sniffs).
+		https://packagist.org/packages/woocommerce/woocommerce-sniffs
+	-->
+	<rule ref="WooCommerce-Core"/>
+
+	<rule ref="PHPCompatibilityWP"/>
+</ruleset>

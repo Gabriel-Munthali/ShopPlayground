@@ -1,0 +1,36 @@
+2026-04-21T07:03:58+00:00 ERROR Initiate rejected or invalid response (HTTP 409). Body: {"type":"https://httpstatuses.com/409","title":"Duplicated Idempotency Key","status":409,"detail":"The same idempotency key was used with a different request payload.","instance":"/sandbox/v1/collections/requestToPay/initiate","errorCode":"E907"}
+2026-04-21T07:09:28+00:00 ERROR Initiate rejected or invalid response (HTTP 409). Body: {"type":"https://httpstatuses.com/409","title":"Duplicated Idempotency Key","status":409,"detail":"The same idempotency key was used with a different request payload.","instance":"/sandbox/v1/collections/requestToPay/initiate","errorCode":"E907"}
+2026-04-21T07:53:55+00:00 ERROR Initiate rejected or invalid response (HTTP 409). Body: {"type":"https://httpstatuses.com/409","title":"Duplicated Idempotency Key","status":409,"detail":"The same idempotency key was used with a different request payload.","instance":"/sandbox/v1/collections/requestToPay/initiate","errorCode":"E907"}
+2026-04-21T07:54:53+00:00 ERROR Initiate rejected or invalid response (HTTP 409). Body: {"type":"https://httpstatuses.com/409","title":"Duplicated Idempotency Key","status":409,"detail":"The same idempotency key was used with a different request payload.","instance":"/sandbox/v1/collections/requestToPay/initiate","errorCode":"E907"}
+2026-04-21T13:01:00+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Page Not Found</title>
+        <link href="https://onekhusa.com/modules/system/assets/css/styles.css" rel="stylesheet" />
+        <script src="https://onekhusa.com/modules/system/assets/js/framework-bundle.min.js"></script>
+        <meta name="turbo-visit-control" content="disable" />
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <div class="container">
+            <h1><i class="icon-chain-broken warning"></i> Page Not 
+2026-04-21T13:11:28+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: {"type":"https://httpstatuses.com/404","title":"Not Found","status":404,"instance":""}
+2026-04-21T13:11:28+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-21T13:13:50+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: {"type":"https://httpstatuses.com/404","title":"Not Found","status":404,"instance":""}
+2026-04-21T13:13:50+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-21T13:13:51+00:00 ERROR Collections RTP idempotency conflict (HTTP 409); retrying. Body: {"type":"https://httpstatuses.com/409","title":"Duplicated Idempotency Key","status":409,"detail":"The same idempotency key was used with a different request payload.","instance":"/sandbox/v1/collections/requestToPay/initiate","errorCode":"E907"}
+2026-04-21T13:20:07+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: {"type":"https://httpstatuses.com/404","title":"Not Found","status":404,"instance":""}
+2026-04-21T13:20:07+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-21T13:25:13+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: {"type":"https://httpstatuses.com/404","title":"Not Found","status":404,"instance":""}
+2026-04-21T13:25:13+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-21T13:29:30+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: {"type":"https://httpstatuses.com/404","title":"Not Found","status":404,"instance":""}
+2026-04-21T13:29:30+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-21T13:29:32+00:00 ERROR Collections RTP returned TAN only (no paymentTransactionId). Redirecting to order thank-you; hosted checkout.ptid must come from checkout RTP initiate—see gateway RTP checkout initiate URL.
+2026-04-21T13:31:13+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: {"type":"https://httpstatuses.com/404","title":"Not Found","status":404,"instance":""}
+2026-04-21T13:31:13+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-21T13:31:15+00:00 ERROR Collections RTP returned TAN only (no paymentTransactionId). Redirecting to order thank-you; hosted checkout.ptid must come from checkout RTP initiate—see gateway RTP checkout initiate URL.
+2026-04-21T13:38:53+00:00 INFO RTP checkout initiate URL is empty; using collections requestToPay/initiate only (see docs.onekhusa.com).
+2026-04-21T13:39:00+00:00 INFO Collections RTP returned TAN only (no paymentTransactionId). Customer sent to thank-you page. Hosted checkout needs a working RTP checkout initiate URL that returns paymentTransactionId.
+2026-04-21T13:49:08+00:00 ERROR Checkout RTP initiate rejected or invalid response (HTTP 404). Body: {"type":"https://httpstatuses.com/404","title":"Not Found","status":404,"instance":""}
+2026-04-21T13:49:08+00:00 ERROR Checkout RTP initiate unavailable; trying collections requestToPay/initiate.
+2026-04-21T13:49:11+00:00 INFO Collections RTP returned TAN only (no paymentTransactionId). Customer sent to thank-you page. Hosted checkout needs a working RTP checkout initiate URL that returns paymentTransactionId.

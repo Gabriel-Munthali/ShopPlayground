@@ -1,0 +1,10 @@
+/vendor/
+.phpunit.result.cache
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+build/*
+!build/README.md
+!build/checkout-blocks.js
+!build/checkout-blocks.asset.php
