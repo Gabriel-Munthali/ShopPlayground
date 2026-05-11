@@ -20,15 +20,26 @@ class WC_Onekhusa_Gateway_Settings {
 	public static function get_form_fields() {
 		return array(
 			'section_status_checkout' => array(
-				'title'       => __('Status & checkout text', 'woocommerce-onekhusa-rtp'),
+				'title'       => __('Status & checkout', 'woocommerce-onekhusa-rtp'),
 				'type'        => 'title',
-				'description' => __('What customers see at checkout.', 'woocommerce-onekhusa-rtp'),
+				'description' => __('What customers see at checkout. API endpoints follow OneKhusa documentation and are selected by environment below.', 'woocommerce-onekhusa-rtp'),
 			),
 			'enabled'     => array(
 				'title'   => __('Enable/Disable', 'woocommerce-onekhusa-rtp'),
 				'type'    => 'checkbox',
 				'label'   => __('Enable OneKhusa Request To Pay (RTP)', 'woocommerce-onekhusa-rtp'),
 				'default' => 'no',
+			),
+			'environment' => array(
+				'title'       => __('Environment', 'woocommerce-onekhusa-rtp'),
+				'type'        => 'select',
+				'description' => __('Use sandbox while testing. Switch to live only after your production access is approved.', 'woocommerce-onekhusa-rtp'),
+				'default'     => 'sandbox',
+				'options'     => array(
+					'sandbox' => __('Sandbox (testing)', 'woocommerce-onekhusa-rtp'),
+					'live'    => __('Live (production)', 'woocommerce-onekhusa-rtp'),
+				),
+				'desc_tip'    => true,
 			),
 			'title'       => array(
 				'title'       => __('Title', 'woocommerce-onekhusa-rtp'),
@@ -73,42 +84,15 @@ class WC_Onekhusa_Gateway_Settings {
 				'title' => __('API secret', 'woocommerce-onekhusa-rtp'),
 				'type'  => 'password',
 			),
-			'section_endpoints' => array(
-				'title'       => __('API endpoints', 'woocommerce-onekhusa-rtp'),
+			'section_logging' => array(
+				'title'       => __('Logging (optional)', 'woocommerce-onekhusa-rtp'),
 				'type'        => 'title',
-				'description' => __('Choose sandbox while testing, live once approved.', 'woocommerce-onekhusa-rtp'),
-			),
-			'api_base' => array(
-				'title'       => __('API base URL', 'woocommerce-onekhusa-rtp'),
-				'type'        => 'text',
-				'description' => __('Use the sandbox URL while testing, the live URL once approved.', 'woocommerce-onekhusa-rtp'),
-				'default'     => 'https://api.onekhusa.com/sandbox/v1',
-				'desc_tip'    => true,
-			),
-			'hosted_checkout_base' => array(
-				'title'       => __('Hosted Checkout base URL', 'woocommerce-onekhusa-rtp'),
-				'type'        => 'text',
-				'description' => __('Where shoppers go to authorise payment. Default works for most stores.', 'woocommerce-onekhusa-rtp'),
-				'default'     => 'https://checkout.onekhusa.com/requestToPay/initiate',
-				'desc_tip'    => true,
-			),
-			'section_advanced' => array(
-				'title'       => __('Advanced (optional)', 'woocommerce-onekhusa-rtp'),
-				'type'        => 'title',
-				'description' => __('Most stores can leave this section alone.', 'woocommerce-onekhusa-rtp'),
-			),
-			'rtp_checkout_initiate_url' => array(
-				'title'       => __('Hosted Checkout RTP Initiate URL (Optional override)', 'woocommerce-onekhusa-rtp'),
-				'type'        => 'text',
-				'description' => __('Leave empty unless OneKhusa gave you a different URL.', 'woocommerce-onekhusa-rtp'),
-				'default'     => '',
-				'placeholder' => __('Default: {API base}/checkout/rtp/initiate', 'woocommerce-onekhusa-rtp'),
-				'desc_tip'    => true,
+				'description' => __('Diagnostic messages for troubleshooting.', 'woocommerce-onekhusa-rtp'),
 			),
 			'debug_log' => array(
-				'title'       => __('Detailed logging (Optional)', 'woocommerce-onekhusa-rtp'),
+				'title'       => __('Detailed logging', 'woocommerce-onekhusa-rtp'),
 				'type'        => 'checkbox',
-				'label'       => __('Log diagnostic info to WooCommerce > Status > Logs (source: onekhusa_rtp).', 'woocommerce-onekhusa-rtp'),
+				'label'       => __('Log diagnostic info to WooCommerce → Status → Logs (source: onekhusa_rtp).', 'woocommerce-onekhusa-rtp'),
 				'default'     => 'no',
 				'description' => __('Turn on only while troubleshooting.', 'woocommerce-onekhusa-rtp'),
 				'desc_tip'    => true,

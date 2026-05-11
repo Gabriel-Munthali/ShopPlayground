@@ -20,6 +20,27 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 	public const ID = 'onekhusa_rtp';
 
 	/**
+	 * Sandbox API base (docs.onekhusa.com — Introduction).
+	 *
+	 * @var string
+	 */
+	private const API_BASE_SANDBOX = 'https://api.onekhusa.com/sandbox/v1';
+
+	/**
+	 * Live API base (docs.onekhusa.com — Quick Integration, production deployment).
+	 *
+	 * @var string
+	 */
+	private const API_BASE_LIVE = 'https://api.onekhusa.com/live/v1';
+
+	/**
+	 * Hosted checkout redirect base before ?ptid= (Request To Pay Checkout docs).
+	 *
+	 * @var string
+	 */
+	private const HOSTED_CHECKOUT_PTID_BASE = 'https://checkout.onekhusa.com/requestToPay/initiate';
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -31,7 +52,7 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 		$this->supports           = array('products');
 
 		$this->init_form_fields();
-		$this->maybe_migrate_legacy_api_url();
+		$this->maybe_migrate_gateway_settings();
 		$this->init_settings();
 
 		$this->title       = $this->get_option('title');
@@ -39,6 +60,32 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 		$this->enabled     = $this->get_option('enabled');
 
 		add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
+	}
+
+	/**
+	 * Option keys removed from the admin form; strip on save and migration.
+	 *
+	 * @return string[]
+	 */
+	private static function deprecated_option_keys() {
+		return array(
+			'api_base',
+			'initiate_api_url',
+			'checkout_redirect_base',
+			'hosted_checkout_base',
+			'rtp_checkout_initiate_url',
+		);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function process_admin_options() {
+		parent::process_admin_options();
+		foreach (self::deprecated_option_keys() as $k) {
+			unset($this->settings[$k]);
+		}
+		update_option($this->get_option_key(), $this->settings);
 	}
 
 	/**
@@ -78,45 +125,83 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * One-time migration from old initiate_api_url / checkout_redirect_base to api_base.
+	 * Migrate legacy URL options to `environment` and drop deprecated keys.
 	 */
-	private function maybe_migrate_legacy_api_url() {
+	private function maybe_migrate_gateway_settings() {
 		$key = $this->get_option_key();
 		$opt = get_option($key, array());
-		if (!is_array($opt) || (!empty($opt['api_base']) && is_string($opt['api_base']))) {
+		if (!is_array($opt)) {
 			return;
 		}
-		$legacy = isset($opt['initiate_api_url']) ? trim((string) $opt['initiate_api_url']) : '';
-		if ($legacy === '') {
+		$deprecated = self::deprecated_option_keys();
+		$has_deprecated = false;
+		foreach ($deprecated as $d) {
+			if (array_key_exists($d, $opt)) {
+				$has_deprecated = true;
+				break;
+			}
+		}
+		$env = isset($opt['environment']) ? trim((string) $opt['environment']) : '';
+		$needs_env = ('sandbox' !== $env && 'live' !== $env);
+
+		if (!$has_deprecated && !$needs_env) {
 			return;
 		}
-		$base = 'https://api.onekhusa.com/sandbox/v1';
-		if (preg_match('#^(https://[^/]+/(?:sandbox|live)/v1)(?:/|$)#i', $legacy, $m)) {
-			$base = untrailingslashit($m[1]);
+
+		if ($needs_env) {
+			$opt['environment'] = $this->infer_environment_from_legacy_options($opt);
 		}
-		$opt['api_base'] = $base;
-		unset($opt['initiate_api_url'], $opt['checkout_redirect_base']);
+
+		foreach ($deprecated as $d) {
+			unset($opt[ $d ]);
+		}
+
 		update_option($key, $opt);
 	}
 
 	/**
-	 * Read saved settings: prefer api_base; fall back to legacy initiate_api_url (derive base if possible).
+	 * Derive sandbox vs live from superseded URL options.
+	 *
+	 * @param array $opt Raw gateway options.
+	 * @return string sandbox|live
+	 */
+	private function infer_environment_from_legacy_options(array $opt) {
+		$urls = array();
+		foreach (array('api_base', 'initiate_api_url', 'rtp_checkout_initiate_url') as $field) {
+			if (!empty($opt[ $field ]) && is_string($opt[ $field ])) {
+				$urls[] = trim((string) $opt[ $field ]);
+			}
+		}
+		foreach ($urls as $url) {
+			if (preg_match('#/sandbox/v1(?:/|$)#i', $url)) {
+				return 'sandbox';
+			}
+			if (preg_match('#/live/v1(?:/|$)#i', $url)) {
+				return 'live';
+			}
+		}
+		foreach ($urls as $url) {
+			if ($url !== '') {
+				WC_Onekhusa_Logger::warning(
+					'OneKhusa RTP: a stored URL could not be mapped to sandbox or live. Defaulting to sandbox; choose Live in WooCommerce payment settings if this site uses production.'
+				);
+				break;
+			}
+		}
+		return 'sandbox';
+	}
+
+	/**
+	 * API base for the selected environment (constants; not configurable in admin).
 	 *
 	 * @return string
 	 */
 	private function get_api_base() {
-		$base = trim((string) $this->get_option('api_base', ''));
-		if ($base !== '') {
-			return untrailingslashit(esc_url_raw($base));
+		$env = trim((string) $this->get_option('environment', 'sandbox'));
+		if ('live' === $env) {
+			return self::API_BASE_LIVE;
 		}
-		$legacy = trim((string) $this->get_option('initiate_api_url', ''));
-		if ($legacy === '') {
-			return 'https://api.onekhusa.com/sandbox/v1';
-		}
-		if (preg_match('#^(https://[^/]+/(?:sandbox|live)/v1)(?:/|$)#i', $legacy, $m)) {
-			return untrailingslashit($m[1]);
-		}
-		return untrailingslashit(esc_url_raw($legacy));
+		return self::API_BASE_SANDBOX;
 	}
 
 	/**
@@ -129,17 +214,11 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Hosted Checkout RTP Initiate POST URL.
-	 * Override via gateway setting; otherwise {api_base}/checkout/rtp/initiate.
+	 * Hosted Checkout RTP Initiate POST URL: {api_base}/checkout/rtp/initiate.
 	 *
 	 * @return string
 	 */
 	private function get_rtp_checkout_initiate_url() {
-		$override = trim((string) $this->get_option('rtp_checkout_initiate_url', ''));
-		if ($override !== '') {
-			$override = str_replace('/api/checkout/rtp/initiate', '/checkout/rtp/initiate', $override);
-			return esc_url_raw($override);
-		}
 		return esc_url_raw(untrailingslashit($this->get_api_base()) . '/checkout/rtp/initiate');
 	}
 
@@ -150,11 +229,7 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	private function get_hosted_checkout_redirect_url($ptid) {
-		$base = trim((string) $this->get_option('hosted_checkout_base', ''));
-		if ($base === '') {
-			$base = 'https://checkout.onekhusa.com/requestToPay/initiate';
-		}
-		$base = untrailingslashit(esc_url_raw($base));
+		$base = untrailingslashit(esc_url_raw(self::HOSTED_CHECKOUT_PTID_BASE));
 		return add_query_arg(
 			array(
 				'ptid' => (string) $ptid,
