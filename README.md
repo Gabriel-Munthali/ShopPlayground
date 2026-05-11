@@ -56,6 +56,6 @@ Do not reuse these credentials anywhere else.
 
 ## OneKhusa integration
 
-The gateway plugin treats <https://docs.onekhusa.com> as the source of truth for endpoints, payloads, auth, and webhook verification. The primary checkout flow is the hosted RTP initiate endpoint (`/api/checkout/rtp/initiate`); any local notes under `docs/onekhusa-*.md` are supplementary and must reconcile with the official docs.
+The gateway plugin treats <https://docs.onekhusa.com> as the source of truth for endpoints, payloads, auth, and webhook verification. The primary checkout flow is hosted RTP initiate (`{api_base}/checkout/rtp/initiate`, with sandbox vs live chosen in WooCommerce settings); any local notes under `docs/onekhusa-*.md` are supplementary and must reconcile with the official docs.
 
 
