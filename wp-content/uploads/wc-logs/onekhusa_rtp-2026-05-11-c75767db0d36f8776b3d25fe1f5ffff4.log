@@ -1,0 +1,1 @@
+2026-05-11T07:37:59+00:00 ERROR Hosted Checkout RTP Initiate rejected or invalid response (order_id=83 order_number=83 HTTP 400). Body: {"type":"https://httpstatuses.com/400","title":"Validation Error","status":400,"detail":"Merchant account number provided does not exist","instance":"/live/v1/checkout/rtp/initiate","errorCode":"E900"}
