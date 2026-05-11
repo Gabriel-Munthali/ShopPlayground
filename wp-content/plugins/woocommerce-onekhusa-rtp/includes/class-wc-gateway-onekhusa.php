@@ -377,7 +377,7 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 		$amount     = (float) $amount_dec;
 
 		$success_redirect_url = $order->get_checkout_order_received_url();
-		$failure_redirect_url = $success_redirect_url;
+		$failure_redirect_url = $order->get_checkout_payment_url( true );
 		$webhook_url          = WC_Onekhusa_Webhook::get_callback_url();
 
 		$description = mb_substr(
