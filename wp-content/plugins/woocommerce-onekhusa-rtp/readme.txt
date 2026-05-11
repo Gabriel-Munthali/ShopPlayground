@@ -28,7 +28,7 @@ OneKhusa RTP uses **Hosted Checkout RTP Initiate** (`{api_base}/checkout/rtp/ini
 	* **Environment** — Sandbox (testing) or Live (production)
 	* **Title** and **Description** (shown at checkout)
 	* **Merchant Account Number** and **Organisation ID** (from the OneKhusa portal)
-	* **API key** and **API secret**
+	* **Sandbox** and **Live** API key and secret (from the OneKhusa portal; whichever matches **Environment** is used at checkout)
 	* Optional **Detailed logging** for troubleshooting (WooCommerce → Status → Logs, source `onekhusa_rtp`)
 
 == Frequently Asked Questions ==

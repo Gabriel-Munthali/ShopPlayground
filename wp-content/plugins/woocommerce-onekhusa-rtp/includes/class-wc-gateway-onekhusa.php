@@ -20,14 +20,14 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 	public const ID = 'onekhusa_rtp';
 
 	/**
-	 * Sandbox API base (docs.onekhusa.com — Introduction).
+	 * Sandbox API base URL (`/sandbox/v1`), per OneKhusa documentation.
 	 *
 	 * @var string
 	 */
 	private const API_BASE_SANDBOX = 'https://api.onekhusa.com/sandbox/v1';
 
 	/**
-	 * Live API base (docs.onekhusa.com — Quick Integration, production deployment).
+	 * Production API base URL (`/live/v1`), per OneKhusa documentation.
 	 *
 	 * @var string
 	 */
@@ -63,7 +63,9 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Option keys removed from the admin form; strip on save and migration.
+	 * Option keys removed from the admin UI; stripped on save and during settings migration.
+	 *
+	 * Includes removed URL overrides, legacy single-pair credentials, and superseded slugs.
 	 *
 	 * @return string[]
 	 */
@@ -74,6 +76,8 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 			'checkout_redirect_base',
 			'hosted_checkout_base',
 			'rtp_checkout_initiate_url',
+			'api_key',
+			'api_secret',
 		);
 	}
 
@@ -125,7 +129,54 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Migrate legacy URL options to `environment` and drop deprecated keys.
+	 * Migrates legacy `api_key` / `api_secret` into sandbox- and production-specific option keys,
+	 * then removes the legacy entries from `$opt`.
+	 *
+	 * When all four per-environment fields are still empty and legacy values exist, copies only
+	 * into the slot that matches the stored `environment` so production credentials are never
+	 * populated from sandbox-only keys.
+	 *
+	 * @param array $opt Gateway settings; modified in place.
+	 * @return bool True if this method altered `$opt` (including legacy key removal).
+	 */
+	private static function migrate_legacy_api_credentials(array &$opt) {
+		if (!array_key_exists('api_key', $opt) && !array_key_exists('api_secret', $opt)) {
+			return false;
+		}
+
+		$legacy_key    = isset($opt['api_key']) ? trim((string) $opt['api_key']) : '';
+		$legacy_secret = isset($opt['api_secret']) ? trim((string) $opt['api_secret']) : '';
+
+		$sk = isset($opt['api_key_sandbox']) ? trim((string) $opt['api_key_sandbox']) : '';
+		$ss = isset($opt['api_secret_sandbox']) ? trim((string) $opt['api_secret_sandbox']) : '';
+		$lk = isset($opt['api_key_live']) ? trim((string) $opt['api_key_live']) : '';
+		$ls = isset($opt['api_secret_live']) ? trim((string) $opt['api_secret_live']) : '';
+
+		$new_all_empty = ($sk === '' && $ss === '' && $lk === '' && $ls === '');
+
+		if ($new_all_empty && ($legacy_key !== '' || $legacy_secret !== '')) {
+			$env = isset($opt['environment']) ? trim((string) $opt['environment']) : '';
+			if ('live' !== $env) {
+				$env = 'sandbox';
+			}
+			if ('live' === $env) {
+				$opt['api_key_live']    = $legacy_key;
+				$opt['api_secret_live'] = $legacy_secret;
+			} else {
+				$opt['api_key_sandbox']    = $legacy_key;
+				$opt['api_secret_sandbox'] = $legacy_secret;
+			}
+		}
+
+		unset($opt['api_key'], $opt['api_secret']);
+		return true;
+	}
+
+	/**
+	 * Ensures stored settings match the current plugin schema: credential migration, `environment`
+	 * backfill from removed URL fields, and removal of deprecated option keys.
+	 *
+	 * Runs on gateway construction; persists only when something changed.
 	 */
 	private function maybe_migrate_gateway_settings() {
 		$key = $this->get_option_key();
@@ -133,6 +184,9 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 		if (!is_array($opt)) {
 			return;
 		}
+
+		$credential_changed = self::migrate_legacy_api_credentials($opt);
+
 		$deprecated = self::deprecated_option_keys();
 		$has_deprecated = false;
 		foreach ($deprecated as $d) {
@@ -144,7 +198,7 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 		$env = isset($opt['environment']) ? trim((string) $opt['environment']) : '';
 		$needs_env = ('sandbox' !== $env && 'live' !== $env);
 
-		if (!$has_deprecated && !$needs_env) {
+		if (!$credential_changed && !$has_deprecated && !$needs_env) {
 			return;
 		}
 
@@ -160,10 +214,10 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Derive sandbox vs live from superseded URL options.
+	 * Infers the `environment` option (`sandbox` or `live`) from legacy per-URL settings removed from the admin UI.
 	 *
-	 * @param array $opt Raw gateway options.
-	 * @return string sandbox|live
+	 * @param array $opt Raw gateway options (may still contain deprecated URL keys).
+	 * @return string `sandbox` for testing API hosts, `live` for production API hosts.
 	 */
 	private function infer_environment_from_legacy_options(array $opt) {
 		$urls = array();
@@ -192,9 +246,11 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * API base for the selected environment (constants; not configurable in admin).
+	 * Resolves the OneKhusa API base for the merchant’s selected environment (sandbox vs production).
 	 *
-	 * @return string
+	 * Values are fixed constants aligned with docs.onekhusa.com; not overridable in wp-admin.
+	 *
+	 * @return string Full base URL including version path segment.
 	 */
 	private function get_api_base() {
 		$env = trim((string) $this->get_option('environment', 'sandbox'));
@@ -202,6 +258,25 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 			return self::API_BASE_LIVE;
 		}
 		return self::API_BASE_SANDBOX;
+	}
+
+	/**
+	 * Loads the trimmed API key and secret for the active environment (sandbox testing or production).
+	 *
+	 * @return array{0: string, 1: string} Tuple of API key, API secret.
+	 */
+	private function get_api_credentials_for_current_environment() {
+		$env = trim((string) $this->get_option('environment', 'sandbox'));
+		if ('live' === $env) {
+			return array(
+				trim((string) $this->get_option('api_key_live', '')),
+				trim((string) $this->get_option('api_secret_live', '')),
+			);
+		}
+		return array(
+			trim((string) $this->get_option('api_key_sandbox', '')),
+			trim((string) $this->get_option('api_secret_sandbox', '')),
+		);
 	}
 
 	/**
@@ -238,6 +313,13 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 		);
 	}
 
+	/**
+	 * Builds a bounded idempotency key for Hosted Checkout RTP Initiate requests.
+	 *
+	 * @param int $merchant_account_int Normalized merchant account number.
+	 * @param int $order_id             WooCommerce order ID.
+	 * @return string Alphanumeric key (max length enforced for API compatibility).
+	 */
 	private function build_idempotency_key($merchant_account_int, $order_id) {
 		$key = sprintf(
 			'%d-wcrtp-%d-%s',
@@ -319,10 +401,12 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Process payment: POST Hosted Checkout RTP Initiate, then redirect to OneKhusa Hosted Checkout.
+	 * Initiates Hosted Checkout RTP: POST `/checkout/rtp/initiate`, then redirects the shopper.
 	 *
-	 * @param int $order_id Order ID.
-	 * @return array
+	 * Uses API credentials and base URL for the configured environment (sandbox vs production).
+	 *
+	 * @param int $order_id WooCommerce order ID.
+	 * @return array{result: string, redirect: string} WooCommerce payment result shape.
 	 */
 	public function process_payment($order_id) {
 		$order_id = (int) $order_id;
@@ -337,18 +421,29 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 
 		$order_num = sanitize_text_field((string) $order->get_order_number());
 
-		$api_key = trim((string) $this->get_option('api_key', ''));
-		$secret  = trim((string) $this->get_option('api_secret', ''));
-		$org_id  = trim((string) $this->get_option('organisation_id', ''));
+		list($api_key, $secret) = $this->get_api_credentials_for_current_environment();
+		$org_id                 = trim((string) $this->get_option('organisation_id', ''));
 		if ($api_key === '' || $secret === '' || $org_id === '') {
+			$env = trim((string) $this->get_option('environment', 'sandbox'));
+			$env_label = ('live' === $env)
+				? __('live', 'woocommerce-onekhusa-rtp')
+				: __('sandbox', 'woocommerce-onekhusa-rtp');
 			WC_Onekhusa_Logger::error(
 				sprintf(
-					'process_payment failed: gateway not configured (missing api_key, api_secret, or organisation_id). order_id=%d order_number=%s',
+					'process_payment failed: gateway not configured (missing %s API key/secret or organisation_id). order_id=%d order_number=%s',
+					$env_label,
 					$order_id,
 					$order_num
 				)
 			);
-			wc_add_notice(__('OneKhusa payment is not configured. Please contact the store administrator.', 'woocommerce-onekhusa-rtp'), 'error');
+			wc_add_notice(
+				sprintf(
+					/* translators: %s: Localized environment label (sandbox testing or live/production). */
+					__('OneKhusa payment is not configured for the %s environment. Please contact the store administrator.', 'woocommerce-onekhusa-rtp'),
+					$env_label
+				),
+				'error'
+			);
 			return array(
 				'result'   => 'failure',
 				'redirect' => '',
