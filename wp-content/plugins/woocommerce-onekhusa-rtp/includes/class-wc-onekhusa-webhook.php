@@ -38,9 +38,9 @@ class WC_Onekhusa_Webhook {
 	}
 
 	/**
-	 * Ensure webhook token option exists (e.g. if activation hook did not run).
+	 * Returns the webhook token, creating and storing one when missing (e.g. activation hook did not run).
 	 */
-	private static function ensure_token() {
+	private static function getOrCreateWebhookToken() {
 		$token = get_option('wc_onekhusa_webhook_token');
 		if (!is_string($token) || $token === '') {
 			$token = wp_generate_password(48, false, false);
@@ -58,7 +58,7 @@ class WC_Onekhusa_Webhook {
 	 * @return string
 	 */
 	public static function get_callback_url() {
-		self::ensure_token();
+		self::getOrCreateWebhookToken();
 		$token = (string) get_option('wc_onekhusa_webhook_token', '');
 		$base  = rest_url('onekhusa/v1/webhook');
 		if (is_string($base) && strpos($base, 'wp-json') !== false) {
@@ -81,7 +81,7 @@ class WC_Onekhusa_Webhook {
 	 * @return bool|WP_Error
 	 */
 	public static function authorize($request) {
-		self::ensure_token();
+		self::getOrCreateWebhookToken();
 		$expected = (string) get_option('wc_onekhusa_webhook_token', '');
 		if ($expected === '') {
 			self::log('Webhook callback rejected: store webhook token option is empty.');

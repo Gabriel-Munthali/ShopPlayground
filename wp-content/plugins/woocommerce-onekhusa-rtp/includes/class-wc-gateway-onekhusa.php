@@ -52,7 +52,7 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 		$this->supports           = array('products');
 
 		$this->init_form_fields();
-		$this->maybe_migrate_gateway_settings();
+		$this->upgradeLegacyGatewayOptions();
 		$this->init_settings();
 
 		$this->title       = $this->get_option('title');
@@ -178,7 +178,7 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 	 *
 	 * Runs on gateway construction; persists only when something changed.
 	 */
-	private function maybe_migrate_gateway_settings() {
+	private function upgradeLegacyGatewayOptions() {
 		$key = $this->get_option_key();
 		$opt = get_option($key, array());
 		if (!is_array($opt)) {
@@ -203,7 +203,7 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 		}
 
 		if ($needs_env) {
-			$opt['environment'] = $this->infer_environment_from_legacy_options($opt);
+			$opt['environment'] = $this->resolveEnvironmentFromLegacyOptions($opt);
 		}
 
 		foreach ($deprecated as $d) {
@@ -214,12 +214,12 @@ class WC_Gateway_Onekhusa extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Infers the `environment` option (`sandbox` or `live`) from legacy per-URL settings removed from the admin UI.
+	 * Resolves the `environment` option (`sandbox` or `live`) from legacy per-URL settings removed from the admin UI.
 	 *
 	 * @param array $opt Raw gateway options (may still contain deprecated URL keys).
 	 * @return string `sandbox` for testing API hosts, `live` for production API hosts.
 	 */
-	private function infer_environment_from_legacy_options(array $opt) {
+	private function resolveEnvironmentFromLegacyOptions(array $opt) {
 		$urls = array();
 		foreach (array('api_base', 'initiate_api_url', 'rtp_checkout_initiate_url') as $field) {
 			if (!empty($opt[ $field ]) && is_string($opt[ $field ])) {
