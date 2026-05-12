@@ -1,6 +1,9 @@
 <?php
 /**
- * Admin form fields for the OneKhusa gateway.
+ * Admin-facing form field definitions for the OneKhusa RTP gateway (WooCommerce → Settings → Payments).
+ *
+ * Sandbox and production each have a dedicated API key pair; the active `environment` selects
+ * which pair is sent to OneKhusa at checkout.
  *
  * @package WooCommerce_Onekhusa_RTP
  */
@@ -8,14 +11,14 @@
 defined('ABSPATH') || exit;
 
 /**
- * WC_Onekhusa_Gateway_Settings class.
+ * Loads payment gateway settings field definitions.
  */
 class WC_Onekhusa_Gateway_Settings {
 
 	/**
-	 * Gateway option definitions for WC_Payment_Gateway::form_fields.
+	 * Returns `form_fields` payloads for {@see WC_Payment_Gateway::init_form_fields()}.
 	 *
-	 * @return array
+	 * @return array<string, array<string, mixed>>
 	 */
 	public static function get_form_fields() {
 		return array(
@@ -71,17 +74,30 @@ class WC_Onekhusa_Gateway_Settings {
 				'description' => __('From the OneKhusa portal: Settings → Profile.', 'woocommerce-onekhusa-rtp'),
 				'desc_tip'    => true,
 			),
-			'section_credentials' => array(
-				'title'       => __('API credentials', 'woocommerce-onekhusa-rtp'),
+			'section_credentials_sandbox' => array(
+				'title'       => __('Sandbox API credentials', 'woocommerce-onekhusa-rtp'),
 				'type'        => 'title',
-				'description' => __('Generated in the OneKhusa portal. Keep these private.', 'woocommerce-onekhusa-rtp'),
+				'description' => __('Used when Environment is Sandbox. Generated in the OneKhusa portal for testing. Keep these private.', 'woocommerce-onekhusa-rtp'),
 			),
-			'api_key'     => array(
-				'title' => __('API key', 'woocommerce-onekhusa-rtp'),
+			'api_key_sandbox'     => array(
+				'title' => __('Sandbox API key', 'woocommerce-onekhusa-rtp'),
 				'type'  => 'password',
 			),
-			'api_secret'  => array(
-				'title' => __('API secret', 'woocommerce-onekhusa-rtp'),
+			'api_secret_sandbox'  => array(
+				'title' => __('Sandbox API secret', 'woocommerce-onekhusa-rtp'),
+				'type'  => 'password',
+			),
+			'section_credentials_live' => array(
+				'title'       => __('Live API credentials', 'woocommerce-onekhusa-rtp'),
+				'type'        => 'title',
+				'description' => __('Used when Environment is Live. Production keys only. Keep these private.', 'woocommerce-onekhusa-rtp'),
+			),
+			'api_key_live'     => array(
+				'title' => __('Live API key', 'woocommerce-onekhusa-rtp'),
+				'type'  => 'password',
+			),
+			'api_secret_live'  => array(
+				'title' => __('Live API secret', 'woocommerce-onekhusa-rtp'),
 				'type'  => 'password',
 			),
 			'section_logging' => array(
