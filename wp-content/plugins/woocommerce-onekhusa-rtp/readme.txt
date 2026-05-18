@@ -4,7 +4,7 @@ Tags: woocommerce, payment-gateway, onekhusa, rtp, malawi
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.1.2
+Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,16 +52,10 @@ Not in this release. Refund and capture flows are not implemented; use your OneK
 
 == Changelog ==
 
-= 0.1.2 =
-* Merchant-friendly settings: Sandbox/Live environment toggle; API and hosted-checkout URLs are fixed in code per OneKhusa docs (removes admin URL fields and overrides). Existing sites migrate from saved API base URLs when possible.
-
-= 0.1.1 =
-* First marketplace-oriented release (metadata, GPL LICENSE, readme, distribution ignore list, scaffolding cleanup).
-
-== Upgrade Notice ==
-
-= 0.1.2 =
-Settings simplified: use **Environment** instead of typing API base URLs; legacy options are migrated automatically when you open Payments settings.
-
-= 0.1.1 =
-Maintenance and packaging updates; no WooCommerce-facing API breaks expected.
+= 0.1.0 =
+* Initial release: OneKhusa Request To Pay (RTP) hosted checkout for WooCommerce.
+* Classic checkout and Cart/Checkout Blocks support (redirect after place order).
+* HPOS compatible.
+* Sandbox/Live **Environment** with separate Sandbox and Live API key/secret fields; API and hosted-checkout URLs are fixed in code per [OneKhusa documentation](https://docs.onekhusa.com) (not editable in admin).
+* REST webhook (`onekhusa/v1/webhook`) with secret token query for `route.callbackApiUrl`.
+* Optional detailed logging (WooCommerce → Status → Logs, source `onekhusa_rtp`).

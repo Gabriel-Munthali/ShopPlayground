@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WooCommerce OneKhusa RTP
  * Description: Request To Pay hosted checkout for OneKhusa. See https://docs.onekhusa.com for API details.
- * Version: 0.1.2
+ * Version: 0.1.0
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * WC requires at least: 8.0
@@ -18,7 +18,7 @@
 
 defined('ABSPATH') || exit;
 
-define('WC_ONEKHUSA_RTP_VERSION', '0.1.2');
+define('WC_ONEKHUSA_RTP_VERSION', '0.1.0');
 define('WC_ONEKHUSA_RTP_PLUGIN_FILE', __FILE__);
 define('WC_ONEKHUSA_RTP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 

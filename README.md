@@ -11,7 +11,7 @@ A local WordPress + WooCommerce sandbox used to develop and test the **OneKhusa 
 
 ## Project layout
 
-- `wp-content/plugins/woocommerce-onekhusa-rtp/` — OneKhusa RTP gateway plugin (in-development)
+- `wp-content/plugins/woocommerce-onekhusa-rtp/` — OneKhusa RTP gateway plugin (**pre-release**; first public version target is **0.1.0**, not yet published)
 - `wp-content/themes/khusa-shop/` — custom storefront theme
 - `docker-compose.yml` — local dev stack (WordPress + MySQL)
 - `wp-config.php` — Docker-aware config; reads env vars and honors `WORDPRESS_PUBLIC_URL`
@@ -56,6 +56,6 @@ Do not reuse these credentials anywhere else.
 
 ## OneKhusa integration
 
-The gateway plugin treats <https://docs.onekhusa.com> as the source of truth for endpoints, payloads, auth, and webhook verification. The primary checkout flow is hosted RTP initiate (`{api_base}/checkout/rtp/initiate`, with sandbox vs live chosen in WooCommerce settings); any local notes under `docs/onekhusa-*.md` are supplementary and must reconcile with the official docs.
+The gateway plugin treats <https://docs.onekhusa.com> as the source of truth for endpoints, payloads, auth, and webhook verification. The primary checkout flow is hosted RTP initiate (`{api_base}/checkout/rtp/initiate`, with sandbox vs live chosen in WooCommerce settings). Versioning: **0.1.0** is the planned first public release; nothing has been tagged or listed on the WooCommerce Marketplace yet. See the plugin `readme.txt` changelog for release notes.
 
 

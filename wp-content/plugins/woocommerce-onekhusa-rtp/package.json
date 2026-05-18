@@ -1,6 +1,6 @@
 {
 	"name": "woocommerce-onekhusa-rtp",
-	"version": "0.1.2",
+	"version": "0.1.0",
 	"description": "Scaffold-style developer tooling for WooCommerce OneKhusa RTP.",
 	"private": true,
 	"scripts": {
