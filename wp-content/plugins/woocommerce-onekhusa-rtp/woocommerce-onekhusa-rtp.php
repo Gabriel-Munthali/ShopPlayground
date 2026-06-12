@@ -35,6 +35,8 @@ register_activation_hook(__FILE__, 'wc_onekhusa_rtp_activate');
 
 add_action('before_woocommerce_init', 'wc_onekhusa_rtp_declare_compat');
 
+add_action('template_redirect', 'wcOnekhusaRtpRedirectPaidOrders');
+
 /**
  * Declare compatibility with WooCommerce optional features (HPOS, Checkout Blocks).
  */
@@ -107,4 +109,38 @@ function wc_onekhusa_rtp_register_blocks_integration() {
 function wc_onekhusa_rtp_add_gateway($gateways) {
 	$gateways[] = 'WC_Gateway_Onekhusa';
 	return $gateways;
+}
+
+/**
+ * Redirect paid OneKhusa orders away from order-pay to order-received.
+ *
+ * @return void
+ */
+function wcOnekhusaRtpRedirectPaidOrders() {
+	$redirect_url = '';
+
+	if (function_exists('is_checkout_pay_page') && is_checkout_pay_page()) {
+		$order_id  = absint(get_query_var('order-pay'));
+		$order_key = isset($_GET['key']) ? wc_clean(wp_unslash($_GET['key'])) : '';
+
+		if ($order_id > 0 && $order_key !== '') {
+			$order = wc_get_order($order_id);
+
+			if ($order
+				&& class_exists('WC_Gateway_Onekhusa')
+				&& $order->get_payment_method() === WC_Gateway_Onekhusa::ID
+				&& hash_equals($order->get_order_key(), $order_key)
+				&& ! $order->needs_payment()
+			) {
+				$redirect_url = $order->get_checkout_order_received_url();
+			}
+		}
+	}
+
+	if ($redirect_url === '') {
+		return;
+	}
+
+	wp_safe_redirect($redirect_url);
+	exit;
 }
